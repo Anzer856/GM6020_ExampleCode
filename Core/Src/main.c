@@ -103,7 +103,7 @@ int main(void)
     FilterConfig.FilterMode       = CAN_FILTERMODE_IDMASK; // 掩码
 
     FilterConfig.FilterBank           = 0;                                   // 配置Bank0
-    FilterConfig.FilterIdHigh         = (GM6020_BackMailBaseID & 0xFF) << 5; // 左对齐
+    FilterConfig.FilterIdHigh         = (GM6020_BackMailBaseID & 0xFF) << 5; // 左对齐，只接受GM6020报文
     FilterConfig.FilterMaskIdHigh     = 0xFC00;
     FilterConfig.FilterFIFOAssignment = CAN_FilterFIFO0;
 
