@@ -59,7 +59,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 #include "GM6020_HW.h"
-
+#include "GM6020_SW.h"
 /* USER CODE END 0 */
 
 /**

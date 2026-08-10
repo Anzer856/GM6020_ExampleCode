@@ -1,1 +1,6 @@
-ALL codes are in /Core/User
+代码在/Core/User
+基于STM32F103C8T6开发板，需外接CAN收发器。
+该代码：
+读取CAN总线ID 0~6的GM6020电机报文并解析。
+每2ms发送1000电流数据给ID为2的电机。
+目前仅保证正常编译。
