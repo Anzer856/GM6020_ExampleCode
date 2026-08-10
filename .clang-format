@@ -1,0 +1,34 @@
+# 基于 LLVM 风格
+BasedOnStyle: LLVM
+
+# 大括号换行（Allman 风格）
+BreakBeforeBraces: Allman
+
+# if 和括号之间加空格
+SpaceBeforeParens: ControlStatements
+
+# 缩进 4 空格
+IndentWidth: 4
+UseTab: Never
+
+# 列宽限制设为 0（防止数学公式被换行破坏）
+ColumnLimit: 0
+
+# 允许短函数内联
+AllowShortFunctionsOnASingleLine: Inline
+
+# 允许短 if 单行（如果不想，改为 false）
+AllowShortIfStatementsOnASingleLine: false
+
+# 指针对齐方式
+PointerAlignment: Left
+
+# 运算符换行规则
+BreakBeforeBinaryOperators: NonAssignment
+
+# 对齐连续赋值
+AlignConsecutiveAssignments: true
+
+# 语言标准
+Language: Cpp
+Standard: Cpp11
