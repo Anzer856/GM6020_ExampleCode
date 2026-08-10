@@ -11,5 +11,5 @@ typedef struct{
   double Output;
   
 }PID_HandleTypeDef;
-void PID_Caculate(PID_HandleTypeDef PID_Handle,uint32_t dT,int32_t Er);
+void PID_Caculate(PID_HandleTypeDef *pPID_Handle,uint32_t dT,int32_t Er);
 #endif
