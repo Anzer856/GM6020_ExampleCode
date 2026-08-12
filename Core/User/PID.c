@@ -15,6 +15,7 @@ typedef struct
     float Inter, Inter_MAX, Inter_Step_Er_MAX;
     float Output, Output_Step_MAX, Output_MAX;
 } PID_HandleTypeDef;
+
 void PID_Caculate(PID_HandleTypeDef* pPid, double dT, double Er)
 {
     // 阻止输入误差过大
