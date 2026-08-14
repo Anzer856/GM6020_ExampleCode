@@ -12,9 +12,10 @@ typedef struct
     float Inter, Inter_MAX;
     float Output, Output_MAX;
 } PID_HandleTypeDef;
-
+//误差Er=Traget-ActualData,Output与ActualData正相关
 float PID_Caculate(PID_HandleTypeDef* pPid, float dT, float Er)
 {
+
     // 阻止输入误差过大
     if (Er < -pPid->Er_MAX)
     {

@@ -1,0 +1,38 @@
+
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Download elf",
+            "type": "shell",
+            "icon": {
+                "id": "plus",
+                "tooltip": "Download"
+            },
+            "command": "openocd",
+            "args": [
+                "-f", "interface/cmsis-dap.cfg",
+                "-f", "target/stm32f1x.cfg",
+                "-c", "program ${workspaceFolderBasename}.elf verify reset exit"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}\\build\\Debug\\"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false,
+                "close": true
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
+                
+            }
+        }
+    ]
+}
