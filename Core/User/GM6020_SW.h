@@ -1,4 +1,0 @@
-#ifndef GM6020_SW_DEFINED
-#define GM6020_SW_DEFINED
-
-#endif

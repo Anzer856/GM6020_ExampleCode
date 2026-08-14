@@ -1,0 +1,16 @@
+{
+    "configurations": [
+    {
+        "cwd": "${workspaceRoot}",
+        "executable": "${workspaceRoot}/build/Debug/GM6020_ExampleCode.elf",
+        "name": "Debug with OpenOCD",
+        "request": "launch",
+        "type": "cortex-debug",
+        "servertype": "openocd",
+        "configFiles": ["openocd.cfg"],
+        "searchDir": [],
+        "runToEntryPoint": "main",
+        "showDevDebugOutput": "none"
+    }
+    ]
+}

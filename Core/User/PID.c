@@ -2,21 +2,18 @@
 #include "stm32f1xx.h"
 #include "stm32f1xx_hal_can.h"
 #include <sys/types.h>
+#define abs_float(N) ((N) >= 0 ? (N) : (-(N)))
 
-inline double ABS(double N)
-{
-    return ((N) >= 0 ? (N) : (-(N)));
-}
 
 typedef struct
 {
     float Kp, Ki, Kd;
     float Er_Last, Er_MAX;
-    float Inter, Inter_MAX, Inter_Step_Er_MAX;
-    float Output, Output_Step_MAX, Output_MAX;
+    float Inter, Inter_MAX;
+    float Output, Output_MAX;
 } PID_HandleTypeDef;
 
-void PID_Caculate(PID_HandleTypeDef* pPid, double dT, double Er)
+float PID_Caculate(PID_HandleTypeDef* pPid, float dT, float Er)
 {
     // 阻止输入误差过大
     if (Er < -pPid->Er_MAX)
@@ -27,21 +24,11 @@ void PID_Caculate(PID_HandleTypeDef* pPid, double dT, double Er)
     {
         Er = pPid->Er_MAX;
     }
-    double Output = pPid->Kp * Er + pPid->Ki * pPid->Inter + pPid->Kd * (Er - pPid->Er_Last) / dT;
+    float Output = pPid->Kp * Er + pPid->Ki * pPid->Inter + pPid->Kd * (Er - pPid->Er_Last) / dT;
     // 误差大时候禁用I
-    if (ABS(Er) >= pPid->Inter_Step_Er_MAX)
-    {
-        pPid->Inter += 0;
-    }
-    // 执行器满时禁用I
-    else if (ABS(Output) >= pPid->Output_MAX)
-    {
-        pPid->Inter += 0;
-    }
-    else
-    {
-        pPid->Inter += Er * dT;
-    }
+    
+    pPid->Inter += Er * dT;
+    
     // 积分上限
     if (-pPid->Inter_MAX > pPid->Inter)
     {
@@ -64,7 +51,7 @@ void PID_Caculate(PID_HandleTypeDef* pPid, double dT, double Er)
     // 输出
     pPid->Er_Last = Er;
     pPid->Output  = Output;
-    return;
+    return Output;
 }
 void PID_Init(PID_HandleTypeDef* pPid)
 {
@@ -76,7 +63,7 @@ void PID_Init(PID_HandleTypeDef* pPid)
     pPid->Inter           = 0;
     pPid->Inter_MAX       = 40.0f;
     pPid->Output          = 0;
-    pPid->Output_Step_MAX = 100.0f;
+
     pPid->Output_MAX      = 200.0f;
     return;
 }
