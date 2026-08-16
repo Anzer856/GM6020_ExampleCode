@@ -144,13 +144,12 @@ void StartDefaultTask(void const* argument)
 
     for (; 1;)
     {
-        // IO处理
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
         osDelay(200);
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
         osDelay(50);
-        Debug_PrintfTXBufferClear();
         printf("Tick:%ld\n", (int32_t)TIM4->CNT);
+        Debug_PrintfTXBufferClear();
     }
     /* USER CODE END StartDefaultTask */
 }
@@ -182,7 +181,7 @@ void StartTask02(void const* argument)
         {
             GM6020_SetTragetSpeed(id, val);
         }
-        Debug_WaitChar('\n');
+        printf("Update:%d\n", id);
         osDelay(2);
     }
     /* USER CODE END StartTask02 */
@@ -206,9 +205,11 @@ void StartTask03(void const* argument)
         for (uint8_t ID = 1; ID <= GM6020_ID_MAX; ID++)
         {
             GM6020_TypeDef* pGM6020 = GM6020_GetInfop(ID);
+            //当数据更新时计算
             if (pGM6020->MotorFeedback.IsUpdated)
             {
                 GM6020_Update(ID);
+                //控制pid刷新比例
                 if (Counter[ID] % Ratio == 0 && pGM6020->PIDAngleEnable)
                 {
                     GM6020_Update_PIDAngle(ID);
@@ -218,6 +219,7 @@ void StartTask03(void const* argument)
             }
             else if ((uint16_t)((UINT16_MAX - usTickCNT) + pGM6020->UpdateLastTickus) > Timeoutus && pGM6020->IsOK == 1)
             {
+              //断联检测
                 pGM6020->IsOK = 0;
                 printf("ID:%d Lost\n", ID);
             }

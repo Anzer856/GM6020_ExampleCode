@@ -43,15 +43,19 @@ int _write(int file, char* ptr, int len)
 
     if (Debug_PrintfTXBufferLen  < Debug_PrintfTXBufferSize)
     {
-        for (uint32_t cnt = 0; cnt < len&&Debug_PrintfTXBufferLen<Debug_PrintfTXBufferSize; cnt++)
+        for (uint32_t cnt = 0; cnt < len; cnt++)
         {
-            
-            Debug_PrintfTXBuffer[(Debug_PrintfTXBufferTop + Debug_PrintfTXBufferLen) % Debug_PrintfTXBufferSize] = ptr[cnt];
-            Debug_PrintfTXBufferLen++;
-            if (Debug_UART->SR & USART_SR_TXE_Msk)
+            while(Debug_PrintfTXBufferSize==Debug_PrintfTXBufferLen)
             {
                 Debug_PrintfTXBufferClear();
             }
+            if(Debug_PrintfTXBufferSize/3<=Debug_PrintfTXBufferLen)
+            {
+                Debug_PrintfTXBufferClear();
+            }
+            Debug_PrintfTXBuffer[(Debug_PrintfTXBufferTop + Debug_PrintfTXBufferLen) % Debug_PrintfTXBufferSize] = ptr[cnt];
+            Debug_PrintfTXBufferLen++;
+            
         }
     }
 

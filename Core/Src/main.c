@@ -91,6 +91,7 @@ void Sys_Init()
     USART1->CR1 |= USART_CR1_RXNEIE_Msk;
     USART1->CR1 |= USART_CR1_TXEIE_Msk;
     Debug_PrintfTXBufferClear();
+    HAL_Delay(10);
     //======================
     for (uint8_t ID = 1; ID < GM6020_ID_MAX; ID++)
     {
@@ -117,7 +118,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  HAL_Delay(100);
+  HAL_Delay(10);
   /* USER CODE END Init */
 
   /* Configure the system clock */
