@@ -214,9 +214,13 @@ void TIM3_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
-  if(USART1->SR&USART_SR_RXNE_Msk)
+  if(Debug_UART->SR&USART_SR_RXNE_Msk)
   {
     Debug_RxPutcToBuffer(USART1->DR);
+  }
+  if(Debug_UART->SR&USART_SR_TXE_Msk)
+  {
+    Debug_PrintfTXBufferClear();
   }
   
   /* USER CODE END USART1_IRQn 0 */

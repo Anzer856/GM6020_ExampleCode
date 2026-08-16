@@ -3,8 +3,16 @@
 
 #include "stm32f1xx.h"
 #include "usart.h"
+#include "cmsis_os.h"
+
+#define Debug_Handle_UART huart1
+#define Debug_UART USART1
+
+#define Debug_PrintfTXBufferSize 64
+#define Debug_PrintfRXBufferSize 32
+
 void Debug_RxPutcToBuffer(uint8_t ch);
-void Debug_PrintfTXBufferClear();
+void Debug_PrintfTXBufferClear(void);
 int __io_getchar(void);
 double Debug_GetInt(void);
 double Debug_GetFloat(void);

@@ -31,6 +31,7 @@ typedef struct
 {
     uint8_t ID;
     uint8_t IsOK;
+
     GM6020_FeedbackTypeDef MotorFeedback;
     PID_HandleTypeDef PIDSpeed;
     PID_HandleTypeDef PIDAngle;
@@ -41,14 +42,13 @@ typedef struct
     int32_t SumAngle;    // 总和角度
     int32_t TAngle, TAngle_MIN, TAngle_MAX;
     uint16_t LastEncoderAngle;
-
     float TSpeed, TSpeed_MIN, TSpeed_MAX;      //
     uint32_t SpeedLastTickus, AngleLastTickus,UpdateLastTickus; // 单位:us
 
 } GM6020_TypeDef;
 
-void GM6020_SetVoltage(uint8_t GM6020_ID, float Voltage);
-void GM6020_SetCurrent(uint8_t GM6020_ID, float Current);
+void GM6020_SetTragetAngle(uint8_t GM6020_ID, float TragetAngle);
+void GM6020_SetTragetSpeed(uint8_t GM6020_ID, float TragetSpeed);
 HAL_StatusTypeDef GM6020_SendVoltageConfig();
 HAL_StatusTypeDef GM6020_SendCurrentConfig();
 void GM6020_WriteInfo(uint8_t GM6020_ID, uint8_t* pDatas);

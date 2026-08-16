@@ -1,17 +1,9 @@
+#include "UART_IO.h"
+#include "stm32f103xb.h"
 
-#include "FreeRTOS.h"
-#include "cmsis_os.h"
-#include "stdio.h"
-#include "stm32f1xx.h"
-#include "stm32f1xx_hal_uart.h"
-#include "usart.h"
-#include <stdint.h>
 
-#define Debug_Handle_UART huart1
-#define Debug_PrintfTXBufferSize 64
 uint8_t Debug_PrintfTXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfTXBufferTop = 0, Debug_PrintfTXBufferLen = 0;
 
-#define Debug_PrintfRXBufferSize 64
 uint8_t Debug_PrintfRXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfRXBufferTop = 0, Debug_PrintfRXBufferLen = 0;
 #include "stdio.h"
 /**
@@ -21,23 +13,13 @@ uint8_t Debug_PrintfRXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfRXBuffe
  */
 void Debug_PrintfTXBufferClear(void)
 {
-    if (HAL_UART_GetState(&Debug_Handle_UART) != HAL_UART_STATE_READY)
+    if (Debug_PrintfTXBufferLen > 0)
     {
-        return;
-    }
-    if (Debug_PrintfTXBufferTop + Debug_PrintfTXBufferLen > Debug_PrintfTXBufferSize)
-    {
-        HAL_UART_Transmit_IT(&Debug_Handle_UART, (uint8_t*)&Debug_PrintfTXBuffer[Debug_PrintfTXBufferTop], Debug_PrintfTXBufferSize - Debug_PrintfTXBufferTop);
-        HAL_UART_Transmit_IT(&Debug_Handle_UART, (uint8_t*)&Debug_PrintfTXBuffer[0], Debug_PrintfTXBufferLen - (Debug_PrintfTXBufferSize - Debug_PrintfTXBufferTop));
-    }
-    else
-    {
-        HAL_UART_Transmit_IT(&Debug_Handle_UART, (uint8_t*)&Debug_PrintfTXBuffer[Debug_PrintfTXBufferTop], Debug_PrintfTXBufferLen);
-        Debug_PrintfTXBufferTop = (Debug_PrintfTXBufferTop + Debug_PrintfTXBufferLen) % Debug_PrintfTXBufferSize;
-        Debug_PrintfTXBufferLen = 0;
+        Debug_UART->DR          = Debug_PrintfTXBuffer[Debug_PrintfTXBufferTop];
+        Debug_PrintfTXBufferTop = (Debug_PrintfTXBufferTop + 1) % Debug_PrintfTXBufferSize;
+        Debug_PrintfTXBufferLen--;
     }
 
-    Debug_PrintfTXBufferTop = 0;
     return;
 }
 /**
@@ -51,18 +33,19 @@ void Debug_PrintfTXBufferClear(void)
 int _write(int file, char* ptr, int len)
 {
 
-    if (Debug_PrintfTXBufferLen < Debug_PrintfTXBufferSize)
+    if (Debug_PrintfTXBufferLen + len < Debug_PrintfTXBufferSize)
     {
         for (uint32_t cnt = 0; cnt < len; cnt++)
         {
+            if(Debug_UART->SR&USART_SR_TXE_Msk)
+            {
+                Debug_PrintfTXBufferClear();
+            }
             Debug_PrintfTXBuffer[(Debug_PrintfTXBufferTop + Debug_PrintfTXBufferLen) % Debug_PrintfTXBufferSize] = ptr[cnt];
             Debug_PrintfTXBufferLen++;
         }
     }
-    if (Debug_PrintfTXBufferLen == Debug_PrintfTXBufferSize)
-    {
-        Debug_PrintfTXBufferClear();
-    }
+
     return len;
 }
 
@@ -127,6 +110,7 @@ double Debug_GetInt(void)
         {
             break;
         }
+        
     } while (1);
 
     return polarity ? -num : num;
@@ -178,6 +162,8 @@ double Debug_GetFloat(void)
 void Debug_WaitChar(uint8_t ch)
 {
 
-    while (__io_getchar() != ch){}
-    return ;
+    while (__io_getchar() != ch)
+    {
+    }
+    return;
 }
