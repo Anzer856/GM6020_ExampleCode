@@ -17,10 +17,8 @@ float PID_Caculate(PID_HandleTypeDef* pPid, float dT, float Er)
     {
         Er = pPid->Er_MAX;
     }
-    float Output = pPid->Kp * Er + pPid->Ki * pPid->Inter + pPid->Kd * (Er - pPid->Er_Last) / dT;
     // 积分
     pPid->Inter += Er * dT;
-
     // 积分上限
     if (-pPid->Inter_MAX > pPid->Inter)
     {
@@ -30,6 +28,9 @@ float PID_Caculate(PID_HandleTypeDef* pPid, float dT, float Er)
     {
         pPid->Inter = pPid->Inter_MAX;
     }
+
+    //计算输出
+    float Output = pPid->Kp * Er + pPid->Ki * pPid->Inter + pPid->Kd * (Er - pPid->Er_Last) / dT;
 
     // 输出限幅
     if (Output > pPid->Output_MAX)
@@ -57,16 +58,16 @@ float PID_Caculate(PID_HandleTypeDef* pPid, float dT, float Er)
 }
 void PID_Init(PID_HandleTypeDef* pPid)
 {
-    pPid->Kp        = 2.2;
-    pPid->Ki        = 1.6;
-    pPid->Kd        = 0.011;
-    pPid->Er_Last   = 0;
-    pPid->Er_MAX    = 1000.0f;
-    pPid->Inter     = 0;
-    pPid->Inter_MAX = 40.0f;
-    pPid->Output    = 0;
-    pPid->Step_Precision=0.1;
-    pPid->Step_MAX=0;
-    pPid->Output_MAX = 200.0f;
+    pPid->Kp             = 0;
+    pPid->Ki             = 0;
+    pPid->Kd             = 0;
+    pPid->Er_Last        = 0;
+    pPid->Er_MAX         = 0;
+    pPid->Inter          = 0;
+    pPid->Inter_MAX      = 0;
+    pPid->Output         = 0;
+    pPid->Step_Precision = 0;
+    pPid->Step_MAX       = 1000;
+    pPid->Output_MAX     = 1000;
     return;
 }

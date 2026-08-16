@@ -151,6 +151,7 @@ void GM6020_Reinit(uint8_t GM6020_ID)
     pGM6020->SumAngle         = 0;
     pGM6020->IsOK             = 1;
     pGM6020->UpdateLastTickus = usTickCNT;
+    pGM6020->PIDAngleEnable=0;
     return;
 }
 void GM6020_Init(uint8_t GM6020_ID)
