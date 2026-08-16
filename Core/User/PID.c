@@ -40,12 +40,13 @@ float PID_Caculate(PID_HandleTypeDef* pPid, float dT, float Er)
     {
         Output = -pPid->Output_MAX;
     }
+    float Step = Output - pPid->Output;
     // 限制步幅
-    if ((Output - pPid->Output) > pPid->Step_MAX && Output > pPid->Output)
+    if ((Step) > pPid->Step_MAX && Step >= 0)
     {
         Output = pPid->Output + pPid->Step_MAX;
     }
-    else if ((Output - pPid->Output) < -pPid->Step_MAX && Output < pPid->Output)
+    else if ((Step) < -pPid->Step_MAX && Step < 0)
     {
         Output = pPid->Output - pPid->Step_MAX;
     }
@@ -64,7 +65,8 @@ void PID_Init(PID_HandleTypeDef* pPid)
     pPid->Inter     = 0;
     pPid->Inter_MAX = 40.0f;
     pPid->Output    = 0;
-
+    pPid->Step_Precision=0.1;
+    pPid->Step_MAX=0;
     pPid->Output_MAX = 200.0f;
     return;
 }
