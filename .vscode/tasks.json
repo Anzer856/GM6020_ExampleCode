@@ -6,7 +6,7 @@
             "label": "Download elf",
             "type": "shell",
             "icon": {
-                "id": "plus",
+                "id": "download",
                 "tooltip": "Download"
             },
             "command": "openocd",
@@ -33,6 +33,46 @@
                 "isDefault": true,
                 
             }
-        }
+        },
+        {
+    "label": "Git: Add & Commit & Push",
+    "type": "shell",
+    "icon": {
+        "id": "repo-push",
+        "tooltip": "Git Add & Commit & Push"
+    },
+    "command": "",
+    "args": [
+        "git",
+        "add",
+        ".",
+        ";",
+        "git",
+        "commit",
+        "-m",
+        "\"Update\"",
+        ";",
+        "git",
+        "push",
+        "github"
+    ],
+    "options": {
+        "cwd": "${workspaceFolder}"
+    },
+    "problemMatcher": [],
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true,
+        "close": true
+    },
+    "group": {
+        "kind": "build",
+        "isDefault": true
+    }
+}
     ]
 }

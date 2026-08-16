@@ -73,7 +73,7 @@ void Sys_Init()
     TIM4->CR1 |= TIM_CR1_CEN_Msk;
     // HAL_TIM_Base_Start();
 
-    HAL_Delay(100);
+    HAL_Delay(50);
     //=======================CAN=====================
     CAN_FilterTypeDef FilterConfig;
     FilterConfig.FilterActivation = CAN_FILTER_ENABLE;
