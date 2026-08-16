@@ -1,4 +1,5 @@
 #include "GM6020_HW.h"
+#include "PID.h"
 
 GM6020_TypeDef GM6020[7];
 uint8_t GM6020_VoltageDatas_Group[2][4] = {};
@@ -151,7 +152,7 @@ void GM6020_Reinit(uint8_t GM6020_ID)
     pGM6020->SumAngle         = 0;
     pGM6020->IsOK             = 1;
     pGM6020->UpdateLastTickus = usTickCNT;
-    pGM6020->PIDAngleEnable=0;
+    
     return;
 }
 void GM6020_Init(uint8_t GM6020_ID)
@@ -162,11 +163,15 @@ void GM6020_Init(uint8_t GM6020_ID)
         return;
     }
     GM6020_TypeDef* pGM6020                = &GM6020[GM6020_ID - 1];
+    PID_Init(&pGM6020->PIDAngle);
+    PID_Init(&pGM6020->PIDSpeed);
     pGM6020->MotorFeedback.ActEncoderAngle = 0;
     pGM6020->MotorFeedback.ActCurrent      = 0;
     pGM6020->MotorFeedback.ActSpeed        = 0;
     pGM6020->MotorFeedback.Temperature     = 0;
     pGM6020->MotorFeedback.IsUpdated       = 0;
+    
+    pGM6020->PIDAngleEnable=0;
     GM6020_Reinit(pGM6020->ID);
 
     return;
@@ -174,7 +179,12 @@ void GM6020_Init(uint8_t GM6020_ID)
 
 //======================================================================================
 //===============================================================================================
-
+/**
+ * @brief 设置目标角度
+ * @param uint8_t GM6020_ID 电机ID
+ * @param float TragetAngle 目标角度，单位圈
+ * @retval None
+ */
 void GM6020_SetTragetAngle(uint8_t GM6020_ID, float TragetAngle)
 {
     // 判断ID是否合法
@@ -200,10 +210,12 @@ void GM6020_SetTragetAngle(uint8_t GM6020_ID, float TragetAngle)
     }
     return;
 }
-GM6020_TypeDef* GM6020_GetInfop(uint8_t GM6020_ID)
-{
-    return &GM6020[(GM6020_ID - 1) % GM6020_ID_MAX];
-}
+/**
+ * @brief 设置目标速度
+ * @param uint8_t GM6020_ID 电机ID
+ * @param float TragetSpeed 目标速度，单位圈/s
+ * @retval None
+ */
 void GM6020_SetTragetSpeed(uint8_t GM6020_ID, float TragetSpeed)
 {
     // 判断ID是否合法
@@ -214,6 +226,11 @@ void GM6020_SetTragetSpeed(uint8_t GM6020_ID, float TragetSpeed)
     GM6020_TypeDef* pGM6020 = &GM6020[GM6020_ID - 1];
     pGM6020->TSpeed         = TragetSpeed;
 }
+/**
+ * @brief 更新角度环
+ * @param uint8_t GM6020_ID 电机ID
+ * @retval None
+ */
 void GM6020_Update_PIDAngle(uint8_t GM6020_ID)
 {
     // 判断ID是否合法
@@ -245,6 +262,11 @@ void GM6020_Update_PIDAngle(uint8_t GM6020_ID)
     }
     return;
 }
+/**
+ * @brief 更新速度环
+ * @param uint8_t GM6020_ID 电机ID
+ * @retval None
+ */
 void GM6020_Update_PIDSpeed(uint8_t GM6020_ID)
 {
     // 判断ID是否合法
@@ -254,15 +276,16 @@ void GM6020_Update_PIDSpeed(uint8_t GM6020_ID)
     }
     GM6020_TypeDef* pGM6020 = &GM6020[GM6020_ID - 1];
     //================================================SpeedPID============================
-    // 计算dT,单位s,考虑溢出
-    float dT_Speed;
+    // 计算dT,单位s,考虑一次溢出
+    //TIM4 CNT Reg 16bit，最大计数60ms
+    float dT_Speed=0;
     if (pGM6020->SpeedLastTickus < usTickCNT)
     {
         dT_Speed = usTickCNT - pGM6020->SpeedLastTickus;
     }
     else
     {
-        // TIM4 CNT Reg 16bit，最大计数60ms
+        
         dT_Speed = UINT16_MAX - pGM6020->SpeedLastTickus + usTickCNT;
     }
     dT_Speed /= 1000000;
@@ -273,6 +296,11 @@ void GM6020_Update_PIDSpeed(uint8_t GM6020_ID)
     PID_Caculate(&pGM6020->PIDSpeed, dT_Speed, Er_Speed);
     return;
 }
+/**
+ * @brief 处理电机报文数据
+ * @param uint8_t GM6020_ID 电机ID
+ * @retval None
+ */
 void GM6020_Update(uint8_t GM6020_ID)
 {
     // 判断ID是否合法
@@ -327,4 +355,14 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef* hcan)
         GM6020_WriteInfo(RxMail.StdId - GM6020_BackMailBaseID, RxDATAs);
     }
     // 更新对应电机PID
+}
+/**
+ * @brief 获取电机结构体指针
+ * @param uint8_t GM6020_ID 电机ID
+ * @retval None
+ */
+
+GM6020_TypeDef* GM6020_GetInfop(uint8_t GM6020_ID)
+{
+    return &GM6020[(GM6020_ID - 1) % GM6020_ID_MAX];
 }

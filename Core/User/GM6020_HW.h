@@ -42,7 +42,10 @@ typedef struct
     int32_t SumAngle;    // 总和角度
     int32_t TAngle, TAngle_MIN, TAngle_MAX;
     uint16_t LastEncoderAngle;
+
+
     float TSpeed, TSpeed_MIN, TSpeed_MAX;      //
+    
     uint32_t SpeedLastTickus, AngleLastTickus,UpdateLastTickus; // 单位:us
 
 } GM6020_TypeDef;

@@ -164,30 +164,36 @@ void StartTask02(void const* argument)
 {
     /* USER CODE BEGIN StartTask02 */
     /* Infinite loop */
-    uint8_t id=1, prag;
-        float val=0;
+    uint8_t id = 1, prag;
+    float val  = 0;
     for (; 1;)
     {
-        
+
         Debug_WaitChar('#');
-        //id                                  = Debug_GetInt();
-        prag                                = Debug_GetInt();
-        val                                 = Debug_GetFloat();
+        // id                                  = Debug_GetInt();
+        prag                    = Debug_GetInt();
+        val                     = Debug_GetFloat();
         GM6020_TypeDef* pGM6020 = GM6020_GetInfop(id);
-        switch(prag)
+        switch (prag)
         {
-            case 11:pGM6020->PIDAngle.Kp=val;
+        case 11:
+            pGM6020->PIDAngle.Kp = val;
             break;
-            case 12:pGM6020->PIDAngle.Ki=val;
+        case 12:
+            pGM6020->PIDAngle.Ki = val;
             break;
-            case 13:pGM6020->PIDAngle.Kd=val;
+        case 13:
+            pGM6020->PIDAngle.Kd = val;
             break;
 
-            case 21:pGM6020->PIDSpeed.Kp=val;
+        case 21:
+            pGM6020->PIDSpeed.Kp = val;
             break;
-            case 22:pGM6020->PIDSpeed.Ki=val;
+        case 22:
+            pGM6020->PIDSpeed.Ki = val;
             break;
-            case 23:pGM6020->PIDSpeed.Kd=val;
+        case 23:
+            pGM6020->PIDSpeed.Kd = val;
             break;
         }
         printf("Update:%d\n", id);
