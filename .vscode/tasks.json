@@ -45,7 +45,7 @@
     "args": [
         "git",
         "add",
-        ".",
+        "--all",
         ";",
         "git",
         "commit",
