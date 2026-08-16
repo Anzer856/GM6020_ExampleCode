@@ -22,14 +22,9 @@
 #include "cmsis_os.h"
 #include "crc.h"
 #include "gpio.h"
-#include "stm32f103xb.h"
-#include "stm32f1xx_hal.h"
-#include "stm32f1xx_hal_gpio.h"
-#include "stm32f1xx_hal_tim.h"
-#include "stm32f1xx_hal_uart.h"
 #include "tim.h"
 #include "usart.h"
-#include <stdint.h>
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -67,10 +62,40 @@ void MX_FREERTOS_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 #include "GM6020_HW.h"
-#include "stdio.h"
 #include "PID.h"
 #include "UART_IO.h"
+#include "stdio.h"
 #include "tim.h"
+void Sys_Init()
+{
+    printf("Start!\n");
+
+    TIM4->CR1 |= TIM_CR1_CEN_Msk;
+    // HAL_TIM_Base_Start();
+
+    HAL_Delay(100);
+    //=======================CAN=====================
+    CAN_FilterTypeDef FilterConfig;
+    FilterConfig.FilterActivation = CAN_FILTER_ENABLE;
+    FilterConfig.FilterScale      = CAN_FILTERSCALE_16BIT; // 16位模式
+    FilterConfig.FilterMode       = CAN_FILTERMODE_IDMASK; // 掩码
+
+    FilterConfig.FilterBank           = 0;                                   // 配置Bank0
+    FilterConfig.FilterIdHigh         = (GM6020_BackMailBaseID & 0xFF) << 5; // 左对齐，只接受GM6020报文
+    FilterConfig.FilterMaskIdHigh     = 0xFC00;
+    FilterConfig.FilterFIFOAssignment = CAN_FilterFIFO0;
+
+    HAL_CAN_ConfigFilter(&hcan, &FilterConfig);
+    HAL_CAN_Start(&hcan);
+    //======================USART1=====================
+    USART1->CR1 |= USART_CR1_RXNEIE_Msk;
+    //======================
+    for (uint8_t ID = 1; ID < GM6020_ID_MAX; ID++)
+    {
+        GM6020_Init(ID);
+    }
+    return ;
+}
 /* USER CODE END 0 */
 
 /**
@@ -107,25 +132,8 @@ int main(void)
     MX_CRC_Init();
     MX_TIM4_Init();
     /* USER CODE BEGIN 2 */
+    Sys_Init();
 
-    printf("Hello!\n");
-    
-    TIM4->CR1|=TIM_CR1_CEN_Msk;
-    //HAL_TIM_Base_Start();
-
-    HAL_Delay(500);
-    CAN_FilterTypeDef FilterConfig;
-    FilterConfig.FilterActivation = CAN_FILTER_ENABLE;
-    FilterConfig.FilterScale      = CAN_FILTERSCALE_16BIT; // 16位模式
-    FilterConfig.FilterMode       = CAN_FILTERMODE_IDMASK; // 掩码
-
-    FilterConfig.FilterBank           = 0;                                   // 配置Bank0
-    FilterConfig.FilterIdHigh         = (GM6020_BackMailBaseID & 0xFF) << 5; // 左对齐，只接受GM6020报文
-    FilterConfig.FilterMaskIdHigh     = 0xFC00;
-    FilterConfig.FilterFIFOAssignment = CAN_FilterFIFO0;
-
-    HAL_CAN_ConfigFilter(&hcan, &FilterConfig);
-    HAL_CAN_Start(&hcan);
     /* USER CODE END 2 */
 
     /* Call init function for freertos objects (in cmsis_os2.c) */
@@ -141,11 +149,10 @@ int main(void)
 
     while (1)
     {
-        
+
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
-        
     }
     /* USER CODE END 3 */
 }
