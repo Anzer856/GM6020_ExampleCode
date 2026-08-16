@@ -1,7 +1,6 @@
 #include "UART_IO.h"
 #include "stm32f103xb.h"
 
-
 uint8_t Debug_PrintfTXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfTXBufferTop = 0, Debug_PrintfTXBufferLen = 0;
 
 uint8_t Debug_PrintfRXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfRXBufferTop = 0, Debug_PrintfRXBufferLen = 0;
@@ -13,13 +12,22 @@ uint8_t Debug_PrintfRXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfRXBuffe
  */
 void Debug_PrintfTXBufferClear(void)
 {
+
     if (Debug_PrintfTXBufferLen > 0)
     {
+        while (!(Debug_UART->SR & USART_SR_TXE))
+        {
+        }
+
         Debug_UART->DR          = Debug_PrintfTXBuffer[Debug_PrintfTXBufferTop];
         Debug_PrintfTXBufferTop = (Debug_PrintfTXBufferTop + 1) % Debug_PrintfTXBufferSize;
         Debug_PrintfTXBufferLen--;
+        Debug_UART->CR1 |= USART_CR1_TXEIE_Msk;
     }
-
+    else
+    {
+        Debug_UART->CR1 &= ~USART_CR1_TXEIE_Msk;
+    }
     return;
 }
 /**
@@ -33,16 +41,17 @@ void Debug_PrintfTXBufferClear(void)
 int _write(int file, char* ptr, int len)
 {
 
-    if (Debug_PrintfTXBufferLen + len < Debug_PrintfTXBufferSize)
+    if (Debug_PrintfTXBufferLen  < Debug_PrintfTXBufferSize)
     {
-        for (uint32_t cnt = 0; cnt < len; cnt++)
+        for (uint32_t cnt = 0; cnt < len&&Debug_PrintfTXBufferLen<Debug_PrintfTXBufferSize; cnt++)
         {
-            if(Debug_UART->SR&USART_SR_TXE_Msk)
+            
+            Debug_PrintfTXBuffer[(Debug_PrintfTXBufferTop + Debug_PrintfTXBufferLen) % Debug_PrintfTXBufferSize] = ptr[cnt];
+            Debug_PrintfTXBufferLen++;
+            if (Debug_UART->SR & USART_SR_TXE_Msk)
             {
                 Debug_PrintfTXBufferClear();
             }
-            Debug_PrintfTXBuffer[(Debug_PrintfTXBufferTop + Debug_PrintfTXBufferLen) % Debug_PrintfTXBufferSize] = ptr[cnt];
-            Debug_PrintfTXBufferLen++;
         }
     }
 
@@ -110,7 +119,7 @@ double Debug_GetInt(void)
         {
             break;
         }
-        
+
     } while (1);
 
     return polarity ? -num : num;

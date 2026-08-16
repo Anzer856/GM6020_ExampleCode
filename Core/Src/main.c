@@ -21,6 +21,7 @@
 #include "cmsis_os.h"
 #include "can.h"
 #include "crc.h"
+#include "stm32f1xx_hal.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -68,7 +69,7 @@ void MX_FREERTOS_Init(void);
 void Sys_Init()
 {
     printf("Start!\n");
-    Debug_PrintfTXBufferClear();
+    
     TIM4->CR1 |= TIM_CR1_CEN_Msk;
     // HAL_TIM_Base_Start();
 
@@ -89,6 +90,7 @@ void Sys_Init()
     //======================USART1=====================
     USART1->CR1 |= USART_CR1_RXNEIE_Msk;
     USART1->CR1 |= USART_CR1_TXEIE_Msk;
+    Debug_PrintfTXBufferClear();
     //======================
     for (uint8_t ID = 1; ID < GM6020_ID_MAX; ID++)
     {
@@ -115,7 +117,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  HAL_Delay(100);
   /* USER CODE END Init */
 
   /* Configure the system clock */
