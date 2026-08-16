@@ -23,7 +23,6 @@
 #include "main.h"
 #include "task.h"
 
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "GM6020_HW.h"
@@ -196,7 +195,7 @@ void StartTask02(void const* argument)
 /* USER CODE END Header_StartTask03 */
 void StartTask03(void const* argument)
 {
-    /* USER CODE BEGIN StartTask03 */
+/* USER CODE BEGIN StartTask03 */
 /* Infinite loop */
 #define Timeoutus 10000
     uint16_t Counter[GM6020_ID_MAX + 1] = {}, Ratio = 10;
@@ -205,11 +204,11 @@ void StartTask03(void const* argument)
         for (uint8_t ID = 1; ID <= GM6020_ID_MAX; ID++)
         {
             GM6020_TypeDef* pGM6020 = GM6020_GetInfop(ID);
-            //当数据更新时计算
+            // 当数据更新时计算
             if (pGM6020->MotorFeedback.IsUpdated)
             {
                 GM6020_Update(ID);
-                //控制pid刷新比例
+                // 控制pid刷新比例
                 if (Counter[ID] % Ratio == 0 && pGM6020->PIDAngleEnable)
                 {
                     GM6020_Update_PIDAngle(ID);
@@ -219,7 +218,7 @@ void StartTask03(void const* argument)
             }
             else if ((uint16_t)((UINT16_MAX - usTickCNT) + pGM6020->UpdateLastTickus) > Timeoutus && pGM6020->IsOK == 1)
             {
-              //断联检测
+                // 断联检测
                 pGM6020->IsOK = 0;
                 printf("ID:%d Lost\n", ID);
             }

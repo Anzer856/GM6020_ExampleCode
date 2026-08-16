@@ -142,6 +142,7 @@ void GM6020_Reinit(uint8_t GM6020_ID)
     }
     GM6020_TypeDef* pGM6020 = &GM6020[GM6020_ID - 1];
     //====================
+    pGM6020->ID=GM6020_ID;
     pGM6020->AngleLastTickus = usTickCNT;
     pGM6020->SpeedLastTickus = usTickCNT;
 

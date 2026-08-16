@@ -12,7 +12,8 @@ typedef struct
     float Er_Last, Er_MAX;
     float Inter, Inter_MAX;
     float Output, Output_MAX;
+    float Step_MAX,Step_Precision;
 } PID_HandleTypeDef;
-double PID_Caculate(PID_HandleTypeDef* pPid, double dT, double Er);
+float PID_Caculate(PID_HandleTypeDef* pPid, float dT, float Er);
 void PID_Init(PID_HandleTypeDef* pPid);
 #endif

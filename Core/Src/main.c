@@ -68,7 +68,7 @@ void MX_FREERTOS_Init(void);
 #include "tim.h"
 void Sys_Init()
 {
-    printf("Start!\n");
+    
     
     TIM4->CR1 |= TIM_CR1_CEN_Msk;
     // HAL_TIM_Base_Start();
@@ -88,15 +88,17 @@ void Sys_Init()
     HAL_CAN_ConfigFilter(&hcan, &FilterConfig);
     HAL_CAN_Start(&hcan);
     //======================USART1=====================
+    printf("Start!\n");
+    
+    Debug_PrintfTXBufferClear();
     USART1->CR1 |= USART_CR1_RXNEIE_Msk;
     USART1->CR1 |= USART_CR1_TXEIE_Msk;
-    Debug_PrintfTXBufferClear();
-    HAL_Delay(10);
     //======================
-    for (uint8_t ID = 1; ID < GM6020_ID_MAX; ID++)
+    for (uint8_t ID = 1; ID <= GM6020_ID_MAX; ID++)
     {
         GM6020_Init(ID);
     }
+    HAL_Delay(1000);
     return ;
 }
 /* USER CODE END 0 */
@@ -135,7 +137,7 @@ int main(void)
   MX_CRC_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-    Sys_Init();
+  Sys_Init();
 
   /* USER CODE END 2 */
 

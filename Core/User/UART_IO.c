@@ -2,7 +2,6 @@
 #include "stm32f103xb.h"
 
 uint8_t Debug_PrintfTXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfTXBufferTop = 0, Debug_PrintfTXBufferLen = 0;
-
 uint8_t Debug_PrintfRXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfRXBufferTop = 0, Debug_PrintfRXBufferLen = 0;
 #include "stdio.h"
 /**
@@ -12,11 +11,11 @@ uint8_t Debug_PrintfRXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfRXBuffe
  */
 void Debug_PrintfTXBufferClear(void)
 {
-
     if (Debug_PrintfTXBufferLen > 0)
     {
         while (!(Debug_UART->SR & USART_SR_TXE))
         {
+
         }
 
         Debug_UART->DR          = Debug_PrintfTXBuffer[Debug_PrintfTXBufferTop];
