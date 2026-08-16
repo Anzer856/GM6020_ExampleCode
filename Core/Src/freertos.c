@@ -144,10 +144,10 @@ void StartDefaultTask(void const* argument)
     for (; 1;)
     {
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
-        osDelay(200);
+        osDelay(18);
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
-        osDelay(50);
-        printf("Tick:%ld\n", (int32_t)TIM4->CNT);
+        osDelay(2);
+        printf("RM2027:%ld\n", (int32_t)TIM4->CNT);
         Debug_PrintfTXBufferClear();
     }
     /* USER CODE END StartDefaultTask */
@@ -224,7 +224,7 @@ void StartTask03(void const* argument)
             }
         }
         GM6020_SendCurrentConfig();
-        osDelay(10);
+        osDelay(2);
     }
     /* USER CODE END StartTask03 */
 }
