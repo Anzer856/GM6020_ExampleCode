@@ -18,15 +18,15 @@ void Debug_TXBufferClear_IT(void)
 
         if ((Debug_UART->SR & USART_SR_TXE))
         {
-            Debug_UART->DR          = Debug_TXBuffer[Debug_TXBufferTop];
+            Debug_UART->DR = Debug_TXBuffer[Debug_TXBufferTop];
+
             Debug_TXBufferTop = (Debug_TXBufferTop + 1) % Debug_TXBufferSize;
             Debug_TXBufferLen--;
         }
-        if(Debug_TXBufferLen>0)
+        if (Debug_TXBufferLen > 0)
         {
             Debug_UART->CR1 |= USART_CR1_TXEIE_Msk;
         }
-        
     }
     else
     {
@@ -48,15 +48,18 @@ int _write(int file, char* ptr, int len)
 
     if (Debug_TXBufferLen < Debug_TXBufferSize)
     {
+        
         for (uint32_t cnt = 0; cnt < len; cnt++)
         {
             if (Debug_TXBufferLen < Debug_TXBufferSize)
             {
+                //禁用中断防止失序错误导致数据丢失
+                Debug_UART->CR1 &= ~USART_CR1_TXEIE_Msk;
                 Debug_TXBuffer[(Debug_TXBufferTop + Debug_TXBufferLen) % Debug_TXBufferSize] = ptr[cnt];
                 Debug_TXBufferLen++;
+                Debug_TXBufferClear_IT();
             }
         }
-        
     }
 
     return len;
@@ -74,7 +77,7 @@ int __io_getchar(void)
     {
         if (Debug_RXBufferLen > 0)
         {
-            data                    = Debug_RXBuffer[(Debug_RXBufferTop) % Debug_RXBufferSize];
+            data              = Debug_RXBuffer[(Debug_RXBufferTop) % Debug_RXBufferSize];
             Debug_RXBufferTop = (Debug_RXBufferTop + 1) % Debug_RXBufferSize;
             Debug_RXBufferLen--;
 
