@@ -148,7 +148,7 @@ void StartDefaultTask(void const* argument)
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
         osDelay(2);
         printf("RM2027:%ld\n", (int32_t)TIM4->CNT);
-        Debug_PrintfTXBufferClear();
+        Debug_TXBufferClear_IT();
     }
     /* USER CODE END StartDefaultTask */
 }

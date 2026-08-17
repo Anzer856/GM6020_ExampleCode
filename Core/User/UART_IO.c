@@ -1,19 +1,17 @@
 #include "UART_IO.h"
-#include "stm32f103xb.h"
 
-uint8_t Debug_PrintfTXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfTXBufferTop = 0, Debug_PrintfTXBufferLen = 0;
-uint8_t Debug_PrintfRXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfRXBufferTop = 0, Debug_PrintfRXBufferLen = 0;
-#include "stdio.h"
+volatile uint8_t Debug_PrintfTXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfTXBufferTop = 0, Debug_PrintfTXBufferLen = 0;
+volatile uint8_t Debug_PrintfRXBuffer[Debug_PrintfTXBufferSize] = {}, Debug_PrintfRXBufferTop = 0, Debug_PrintfRXBufferLen = 0;
+
 /**
  * @brief  清空printf发送缓存
  * @param 	无
  * @retval 无
  */
-void Debug_PrintfTXBufferClear(void)
+void Debug_TXBufferClear_IT(void)
 {
     if (Debug_PrintfTXBufferLen > 0 && (Debug_UART->SR & USART_SR_TXE))
     {
-
         Debug_UART->DR          = Debug_PrintfTXBuffer[Debug_PrintfTXBufferTop];
         Debug_PrintfTXBufferTop = (Debug_PrintfTXBufferTop + 1) % Debug_PrintfTXBufferSize;
         Debug_PrintfTXBufferLen--;
@@ -42,11 +40,11 @@ int _write(int file, char* ptr, int len)
         {
             while (Debug_PrintfTXBufferSize == Debug_PrintfTXBufferLen)
             {
-                Debug_PrintfTXBufferClear();
+                Debug_TXBufferClear_IT();
             }
             if (Debug_PrintfTXBufferSize / 3 <= Debug_PrintfTXBufferLen)
             {
-                Debug_PrintfTXBufferClear();
+                Debug_TXBufferClear_IT();
             }
             Debug_PrintfTXBuffer[(Debug_PrintfTXBufferTop + Debug_PrintfTXBufferLen) % Debug_PrintfTXBufferSize] = ptr[cnt];
             Debug_PrintfTXBufferLen++;
@@ -79,11 +77,11 @@ int __io_getchar(void)
 }
 
 /**
- * @brief Debug_RxPutcToBuffer将字符存入缓存
+ * @brief Debug_RXPutBuffer_IT将字符存入缓存
  * @param  无
  * @retval 返回字符
  */
-void Debug_RxPutcToBuffer(uint8_t ch)
+void Debug_RXPutBuffer_IT(uint8_t ch)
 {
     if (Debug_PrintfRXBufferLen < Debug_PrintfRXBufferSize)
     {

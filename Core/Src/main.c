@@ -90,7 +90,7 @@ void Sys_Init()
     //======================USART1=====================
     printf("Start!\n");
     
-    Debug_PrintfTXBufferClear();
+    Debug_TXBufferClear_IT();
     USART1->CR1 |= USART_CR1_RXNEIE_Msk;
     USART1->CR1 |= USART_CR1_TXEIE_Msk;
     //======================

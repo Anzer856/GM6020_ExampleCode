@@ -1,4 +1,3 @@
-
 {
     "version": "2.0.0",
     "tasks": [
@@ -11,9 +10,12 @@
             },
             "command": "openocd",
             "args": [
-                "-f", "interface/cmsis-dap.cfg",
-                "-f", "target/stm32f1x.cfg",
-                "-c", "program ${workspaceFolderBasename}.elf verify reset exit"
+                "-f",
+                "interface/cmsis-dap.cfg",
+                "-f",
+                "target/stm32f1x.cfg",
+                "-c",
+                "program ${workspaceFolderBasename}.elf verify reset exit"
             ],
             "options": {
                 "cwd": "${workspaceFolder}\\build\\Debug\\"
@@ -31,48 +33,8 @@
             "group": {
                 "kind": "build",
                 "isDefault": true,
-                
             }
         },
-        {
-    "label": "Git: Add & Commit & Push",
-    "type": "shell",
-    "icon": {
-        "id": "repo-push",
-        "tooltip": "Git Add & Commit & Push"
-    },
-    "command": "",
-    "args": [
-        "git",
-        "add",
-        "--all",
-        ";",
-        "git",
-        "commit",
-        "-m",
-        "\"Update\"",
-        ";",
-        "git",
-        "push",
-        "github"
-    ],
-    "options": {
-        "cwd": "${workspaceFolder}"
-    },
-    "problemMatcher": [],
-    "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true,
-        "close": true
-    },
-    "group": {
-        "kind": "build",
-        "isDefault": true
+        
+        ]
     }
-}
-    ]
-}
