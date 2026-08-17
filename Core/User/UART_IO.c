@@ -2,8 +2,8 @@
 
 #include <stdint.h>
 
-volatile uint8_t Debug_PrintfTXBuffer[Debug_TXBufferSize] = {}, Debug_TXBufferTop = 0, Debug_TXBufferLen = 0;
-volatile uint8_t Debug_PrintfRXBuffer[Debug_TXBufferSize] = {}, Debug_RXBufferTop = 0, Debug_RXBufferLen = 0;
+volatile uint8_t Debug_TXBuffer[Debug_TXBufferSize] = {}, Debug_TXBufferTop = 0, Debug_TXBufferLen = 0;
+volatile uint8_t Debug_RXBuffer[Debug_TXBufferSize] = {}, Debug_RXBufferTop = 0, Debug_RXBufferLen = 0;
 
 /**
  * @brief  清空printf发送缓存
@@ -11,20 +11,22 @@ volatile uint8_t Debug_PrintfRXBuffer[Debug_TXBufferSize] = {}, Debug_RXBufferTo
  * @retval 无
  */
 void Debug_TXBufferClear_IT(void)
-void Debug_TXBufferClear_IT(void)
 {
+
     if (Debug_TXBufferLen > 0)
     {
+
         if ((Debug_UART->SR & USART_SR_TXE))
         {
-            Debug_UART->DR    = Debug_PrintfTXBuffer[Debug_TXBufferTop];
+            Debug_UART->DR          = Debug_TXBuffer[Debug_TXBufferTop];
             Debug_TXBufferTop = (Debug_TXBufferTop + 1) % Debug_TXBufferSize;
             Debug_TXBufferLen--;
         }
-        if (Debug_TXBufferLen > 0)
+        if(Debug_TXBufferLen>0)
         {
             Debug_UART->CR1 |= USART_CR1_TXEIE_Msk;
         }
+        
     }
     else
     {
@@ -48,16 +50,13 @@ int _write(int file, char* ptr, int len)
     {
         for (uint32_t cnt = 0; cnt < len; cnt++)
         {
-
             if (Debug_TXBufferLen < Debug_TXBufferSize)
             {
-                Debug_PrintfTXBufferClear();
-            }
-            if(Debug_TXBufferLen*2>=Debug_TXBufferSize)
-            {
-                Debug_UART->CR1 |= USART_CR1_TXEIE_Msk;
+                Debug_TXBuffer[(Debug_TXBufferTop + Debug_TXBufferLen) % Debug_TXBufferSize] = ptr[cnt];
+                Debug_TXBufferLen++;
             }
         }
+        
     }
 
     return len;
@@ -75,7 +74,7 @@ int __io_getchar(void)
     {
         if (Debug_RXBufferLen > 0)
         {
-            data              = Debug_PrintfRXBuffer[(Debug_RXBufferTop) % Debug_RXBufferSize];
+            data                    = Debug_RXBuffer[(Debug_RXBufferTop) % Debug_RXBufferSize];
             Debug_RXBufferTop = (Debug_RXBufferTop + 1) % Debug_RXBufferSize;
             Debug_RXBufferLen--;
 
@@ -94,7 +93,7 @@ void Debug_RXPutBuffer_IT(uint8_t ch)
 {
     if (Debug_RXBufferLen < Debug_RXBufferSize)
     {
-        Debug_PrintfRXBuffer[(Debug_RXBufferTop + Debug_RXBufferLen) % Debug_RXBufferSize] = ch;
+        Debug_RXBuffer[(Debug_RXBufferTop + Debug_RXBufferLen) % Debug_RXBufferSize] = ch;
         Debug_RXBufferLen++;
     }
     return;
