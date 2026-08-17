@@ -1,5 +1,5 @@
 #include "GM6020_HW.h"
-#include "PID.h"
+
 
 GM6020_TypeDef GM6020[7];
 uint8_t GM6020_VoltageDatas_Group[2][4] = {};

@@ -1,11 +1,6 @@
 #ifndef PID_DEFINED
 #define PID_DEFINED
 
-#include "stm32f1xx.h"
-#include "can.h"
-#include "stm32f1xx_hal_can.h"
-
-
 typedef struct
 {
     float Kp, Ki, Kd;

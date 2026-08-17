@@ -4,7 +4,7 @@
 #include "PID.h"
 #include "can.h"
 #include "stm32f1xx.h"
-#include "stm32f1xx_hal_can.h"
+
 
 #define GM6020_ID_MAX 7
 #define GM6020_CANID_Group1 0x1FF

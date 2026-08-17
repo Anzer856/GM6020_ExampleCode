@@ -216,11 +216,11 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 0 */
   if(Debug_UART->SR&USART_SR_RXNE_Msk)
   {
-    Debug_RxPutcToBuffer(USART1->DR);
+    Debug_RXPutBuffer_IT(USART1->DR);
   }
   if(Debug_UART->SR&USART_SR_TXE_Msk)
   {
-    Debug_PrintfTXBufferClear();
+    Debug_TXBufferClear_IT();
   }
   
   /* USER CODE END USART1_IRQn 0 */

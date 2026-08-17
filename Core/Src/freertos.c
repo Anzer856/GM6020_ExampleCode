@@ -135,6 +135,7 @@ void MX_FREERTOS_Init(void)
  * @param  argument: Not used
  * @retval None
  */
+
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const* argument)
 {
@@ -147,8 +148,8 @@ void StartDefaultTask(void const* argument)
         osDelay(18);
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
         osDelay(2);
-        printf("RM2027:%ld\n", (int32_t)TIM4->CNT);
-        Debug_PrintfTXBufferClear();
+        printf("RM2027:%ld\n", usTickCNT);
+        Debug_TXBufferClear_IT();
     }
     /* USER CODE END StartDefaultTask */
 }

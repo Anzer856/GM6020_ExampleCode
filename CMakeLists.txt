@@ -29,7 +29,7 @@ project(${CMAKE_PROJECT_NAME})
 message("Build type: " ${CMAKE_BUILD_TYPE})
 
 # Enable CMake support for ASM and C languages
-enable_language(C ASM)
+enable_language(C ASM CXX)
 
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME})
@@ -52,6 +52,7 @@ add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 file(GLOB_RECURSE USER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/User/*.c
 )
+
 file(GLOB_RECURSE USER_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/User/*.h
 )
