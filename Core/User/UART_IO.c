@@ -11,6 +11,7 @@ volatile uint8_t Debug_PrintfRXBuffer[Debug_TXBufferSize] = {}, Debug_RXBufferTo
  * @retval 无
  */
 void Debug_TXBufferClear_IT(void)
+void Debug_TXBufferClear_IT(void)
 {
     if (Debug_TXBufferLen > 0)
     {
@@ -50,8 +51,7 @@ int _write(int file, char* ptr, int len)
 
             if (Debug_TXBufferLen < Debug_TXBufferSize)
             {
-                Debug_PrintfTXBuffer[(Debug_TXBufferTop + Debug_TXBufferLen) % Debug_TXBufferSize] = ptr[cnt];
-                Debug_TXBufferLen++;
+                Debug_PrintfTXBufferClear();
             }
             if(Debug_TXBufferLen*2>=Debug_TXBufferSize)
             {
