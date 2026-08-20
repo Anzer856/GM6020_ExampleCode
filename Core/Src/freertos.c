@@ -19,13 +19,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
-#include "can.h"
-#include "cmsis_os.h"
-#include "stm32f1xx.h"
-#include "stm32f1xx_hal_can.h"
-#include "stm32f1xx_hal_def.h"
 #include "task.h"
-
+#include "main.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -65,14 +61,14 @@ osThreadId ContorlHandle;
 
 /* USER CODE END FunctionPrototypes */
 
-void StartDefaultTask(void const* argument);
-void StartTask02(void const* argument);
-void StartTask03(void const* argument);
+void StartDefaultTask(void const * argument);
+void StartTask02(void const * argument);
+void StartTask03(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* GetIdleTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetIdleTaskMemory(StaticTask_t** ppxIdleTaskTCBBuffer, StackType_t** ppxIdleTaskStackBuffer, uint32_t* pulIdleTaskStackSize);
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
 
 /* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
 static StaticTask_t xIdleTaskTCBBuffer;
@@ -88,48 +84,48 @@ void vApplicationGetIdleTaskMemory(StaticTask_t** ppxIdleTaskTCBBuffer, StackTyp
 /* USER CODE END GET_IDLE_TASK_MEMORY */
 
 /**
- * @brief  FreeRTOS initialization
- * @param  None
- * @retval None
- */
-void MX_FREERTOS_Init(void)
-{
-    /* USER CODE BEGIN Init */
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
+void MX_FREERTOS_Init(void) {
+  /* USER CODE BEGIN Init */
 
-    /* USER CODE END Init */
+  /* USER CODE END Init */
 
-    /* USER CODE BEGIN RTOS_MUTEX */
+  /* USER CODE BEGIN RTOS_MUTEX */
     /* add mutexes, ... */
-    /* USER CODE END RTOS_MUTEX */
+  /* USER CODE END RTOS_MUTEX */
 
-    /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
     /* add semaphores, ... */
-    /* USER CODE END RTOS_SEMAPHORES */
+  /* USER CODE END RTOS_SEMAPHORES */
 
-    /* USER CODE BEGIN RTOS_TIMERS */
+  /* USER CODE BEGIN RTOS_TIMERS */
     /* start timers, add new ones, ... */
-    /* USER CODE END RTOS_TIMERS */
+  /* USER CODE END RTOS_TIMERS */
 
-    /* USER CODE BEGIN RTOS_QUEUES */
+  /* USER CODE BEGIN RTOS_QUEUES */
     /* add queues, ... */
-    /* USER CODE END RTOS_QUEUES */
+  /* USER CODE END RTOS_QUEUES */
 
-    /* Create the thread(s) */
-    /* definition and creation of MAINTASK */
-    osThreadDef(MAINTASK, StartDefaultTask, osPriorityNormal, 0, 256);
-    MAINTASKHandle = osThreadCreate(osThread(MAINTASK), NULL);
+  /* Create the thread(s) */
+  /* definition and creation of MAINTASK */
+  osThreadDef(MAINTASK, StartDefaultTask, osPriorityNormal, 0, 256);
+  MAINTASKHandle = osThreadCreate(osThread(MAINTASK), NULL);
 
-    /* definition and creation of Serialinput */
-    osThreadDef(Serialinput, StartTask02, osPriorityIdle, 0, 256);
-    SerialinputHandle = osThreadCreate(osThread(Serialinput), NULL);
+  /* definition and creation of Serialinput */
+  osThreadDef(Serialinput, StartTask02, osPriorityIdle, 0, 256);
+  SerialinputHandle = osThreadCreate(osThread(Serialinput), NULL);
 
-    /* definition and creation of Contorl */
-    osThreadDef(Contorl, StartTask03, osPriorityRealtime, 0, 256);
-    ContorlHandle = osThreadCreate(osThread(Contorl), NULL);
+  /* definition and creation of Contorl */
+  osThreadDef(Contorl, StartTask03, osPriorityRealtime, 0, 256);
+  ContorlHandle = osThreadCreate(osThread(Contorl), NULL);
 
-    /* USER CODE BEGIN RTOS_THREADS */
+  /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
-    /* USER CODE END RTOS_THREADS */
+  /* USER CODE END RTOS_THREADS */
+
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -141,9 +137,9 @@ void MX_FREERTOS_Init(void)
  */
 
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const* argument)
+void StartDefaultTask(void const * argument)
 {
-    /* USER CODE BEGIN StartDefaultTask */
+  /* USER CODE BEGIN StartDefaultTask */
     /* Infinite loop */
 
     for (; 1;)
@@ -179,7 +175,7 @@ void StartDefaultTask(void const* argument)
         CAN_RxHeaderTypeDef RxHeader;
         
     }
-    /* USER CODE END StartDefaultTask */
+  /* USER CODE END StartDefaultTask */
 }
 
 /* USER CODE BEGIN Header_StartTask02 */
@@ -189,9 +185,9 @@ void StartDefaultTask(void const* argument)
  * @retval None
  */
 /* USER CODE END Header_StartTask02 */
-void StartTask02(void const* argument)
+void StartTask02(void const * argument)
 {
-    /* USER CODE BEGIN StartTask02 */
+  /* USER CODE BEGIN StartTask02 */
     /* Infinite loop */
     uint8_t id = 1, prag;
     float val  = 0;
@@ -228,7 +224,7 @@ void StartTask02(void const* argument)
         printf("Update:%d\n", id);
         osDelay(2);
     }
-    /* USER CODE END StartTask02 */
+  /* USER CODE END StartTask02 */
 }
 
 /* USER CODE BEGIN Header_StartTask03 */
@@ -237,15 +233,17 @@ void StartTask02(void const* argument)
  * @param argument: Not used
  * @retval None
  */
+
 /* USER CODE END Header_StartTask03 */
-void StartTask03(void const* argument)
+void StartTask03(void const * argument)
 {
-    /* USER CODE BEGIN StartTask03 */
+  /* USER CODE BEGIN StartTask03 */
 /* Infinite loop */
 #define Timeoutus 10000
     uint16_t Counter[GM6020_ID_MAX + 1] = {}, Ratio = 10;
     while (1)
     {
+        
         for (uint8_t ID = 1; ID <= GM6020_ID_MAX; ID++)
         {
             GM6020_TypeDef* pGM6020 = GM6020_GetInfop(ID);
@@ -271,12 +269,14 @@ void StartTask03(void const* argument)
             }
         }
         GM6020_SendCurrentConfig();
+        
         osDelay(2);
     }
-    /* USER CODE END StartTask03 */
+  /* USER CODE END StartTask03 */
 }
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
+

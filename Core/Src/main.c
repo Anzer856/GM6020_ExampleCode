@@ -21,7 +21,6 @@
 #include "cmsis_os.h"
 #include "can.h"
 #include "crc.h"
-#include "stm32f103xb.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"

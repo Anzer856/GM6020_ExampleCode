@@ -60,4 +60,5 @@ void GM6020_Init(uint8_t GM6020_ID);
 void GM6020_Update(uint8_t GM6020_ID);
 void GM6020_Update_PIDAngle(uint8_t GM6020_ID);
 void GM6020_Update_PIDSpeed(uint8_t GM6020_ID);
+
 #endif

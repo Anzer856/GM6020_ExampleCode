@@ -50,13 +50,19 @@ add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
     COMMENT "生成 HEX 文件"
 )
 file(GLOB_RECURSE USER_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/User/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/User/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/User/*.cpp
+
 
 )
 
 file(GLOB_RECURSE USER_INCLUDES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/User/*.h
+    
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/User/*.h
+
+
+    
 )
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
@@ -68,7 +74,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/User
+    ${CMAKE_CURRENT_SOURCE_DIR}/User
     
 )
 
