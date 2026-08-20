@@ -19,9 +19,13 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
+#include "can.h"
 #include "cmsis_os.h"
-#include "main.h"
+#include "stm32f1xx.h"
+#include "stm32f1xx_hal_can.h"
+#include "stm32f1xx_hal_def.h"
 #include "task.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -150,6 +154,30 @@ void StartDefaultTask(void const* argument)
         osDelay(2);
         printf("RM2027:%ld\n", usTickCNT);
 
+        CAN_FilterTypeDef FilterConfig;
+        FilterConfig.FilterActivation = CAN_FILTER_ENABLE;
+        FilterConfig.FilterScale      = CAN_FILTERSCALE_16BIT; // 16位模式
+        FilterConfig.FilterMode       = CAN_FILTERMODE_IDMASK; // 掩码
+
+        FilterConfig.FilterBank           = 0;                                   // 配置Bank0
+        FilterConfig.FilterIdHigh         = (GM6020_BackMailBaseID ) << 5; // 左对齐，只接受GM6020报文
+        FilterConfig.FilterMaskIdHigh     = 0xFC00;
+        FilterConfig.FilterFIFOAssignment = CAN_FilterFIFO0;
+
+        HAL_CAN_ConfigFilter(&hcan, &FilterConfig);
+        HAL_CAN_Start(&hcan);
+        uint8_t idata[]  = {0, 10, 0, 20, 0, 30, 25, 0};
+        uint32_t MailBox = 0;
+        CAN_TxHeaderTypeDef TxHeader;
+        TxHeader.DLC                = 8;
+        TxHeader.ExtId              = 0x00;
+        TxHeader.IDE                = CAN_ID_STD;
+        TxHeader.RTR                = CAN_RTR_DATA;
+        TxHeader.StdId              = 0x205;
+        TxHeader.TransmitGlobalTime = DISABLE;
+        HAL_CAN_AddTxMessage(&hcan, &TxHeader, idata, &MailBox);
+        CAN_RxHeaderTypeDef RxHeader;
+        
     }
     /* USER CODE END StartDefaultTask */
 }
@@ -212,7 +240,7 @@ void StartTask02(void const* argument)
 /* USER CODE END Header_StartTask03 */
 void StartTask03(void const* argument)
 {
-/* USER CODE BEGIN StartTask03 */
+    /* USER CODE BEGIN StartTask03 */
 /* Infinite loop */
 #define Timeoutus 10000
     uint16_t Counter[GM6020_ID_MAX + 1] = {}, Ratio = 10;
@@ -232,6 +260,8 @@ void StartTask03(void const* argument)
                 }
                 GM6020_Update_PIDSpeed(ID);
                 Counter[ID]++;
+
+                pGM6020->MotorFeedback.IsUpdated=0;
             }
             else if ((uint16_t)((UINT16_MAX - usTickCNT) + pGM6020->UpdateLastTickus) > Timeoutus && pGM6020->IsOK == 1)
             {

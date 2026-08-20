@@ -51,10 +51,12 @@ add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
 )
 file(GLOB_RECURSE USER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/User/*.c
+
 )
 
 file(GLOB_RECURSE USER_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/User/*.h
+
 )
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE

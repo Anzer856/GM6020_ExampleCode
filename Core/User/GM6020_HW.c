@@ -172,6 +172,7 @@ void GM6020_Init(uint8_t GM6020_ID)
     pGM6020->MotorFeedback.IsUpdated       = 0;
     
     pGM6020->PIDAngleEnable=0;
+    pGM6020->ID=GM6020_ID;
     GM6020_Reinit(pGM6020->ID);
 
     return;

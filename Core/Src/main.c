@@ -21,7 +21,7 @@
 #include "cmsis_os.h"
 #include "can.h"
 #include "crc.h"
-#include "stm32f1xx_hal.h"
+#include "stm32f103xb.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -87,6 +87,7 @@ void Sys_Init()
 
     HAL_CAN_ConfigFilter(&hcan, &FilterConfig);
     HAL_CAN_Start(&hcan);
+    CAN1->IER|=CAN_IER_FMPIE0;
     //======================USART1=====================
     printf("Start!\n");
     
