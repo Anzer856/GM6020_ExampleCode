@@ -1,17 +1,20 @@
 #ifndef GM6020_HW_DEFINED
 #define GM6020_HW_DEFINED
+#ifdef __cplusplus
 
+extern "C"
+{
+#endif
 #include "PID.h"
 #include "can.h"
 #include "stm32f1xx.h"
 
-
-#define GM6020_ID_MAX 7
+#define IDX_MAX 7
 #define GM6020_CANID_Group1 0x1FF
 #define GM6020_CANID_Group2 0x2FF
 #define GM6020_BackMailBaseID 0x204
 #define GM6020_EncoderAngle_MAX 8191
-
+#define GM6020_ID_MAX 7
 #define GM6020_Current_BIN_MAX 16384
 #define GM6020_Current_MAX 3
 #define GM6020_Voltage_BIN_MAX 25000
@@ -19,16 +22,25 @@
 
 #define usTickCNT (TIM4->CNT)
 
-typedef struct
+    typedef struct
+    {
+        int16_t ActEncoderAngle;
+        int16_t ActSpeed;
+        int16_t ActCurrent;
+        uint8_t Temperature;
+        uint8_t IsUpdated;
+    } GM6020_FeedbackTypeDef;
+    uint8_t GM6020_SendCurrentConfig();
+    uint8_t GM6020_SendVoltageConfig();
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+
+class GM6020_TypeDef
 {
-    int16_t ActEncoderAngle;
-    int16_t ActSpeed;
-    int16_t ActCurrent;
-    uint8_t Temperature;
-    uint8_t IsUpdated;
-} GM6020_FeedbackTypeDef;
-typedef struct
-{
+  public:
     uint8_t ID;
     uint8_t IsOK;
 
@@ -43,22 +55,24 @@ typedef struct
     int32_t TAngle, TAngle_MIN, TAngle_MAX;
     uint16_t LastEncoderAngle;
 
+    float TSpeed, TSpeed_MIN, TSpeed_MAX; //
 
-    float TSpeed, TSpeed_MIN, TSpeed_MAX;      //
-    
-    uint32_t SpeedLastTickus, AngleLastTickus,UpdateLastTickus; // 单位:us
+    uint32_t SpeedLastTickus, AngleLastTickus, UpdateLastTickus; // 单位:us
 
-} GM6020_TypeDef;
+  public:
+    GM6020_TypeDef();
+    void SetID(uint8_t IDX);
+    void SetVoltage(float Voltage);
+    void SetCurrent(float Current);
 
-void GM6020_SetTragetAngle(uint8_t GM6020_ID, float TragetAngle);
-void GM6020_SetTragetSpeed(uint8_t GM6020_ID, float TragetSpeed);
-HAL_StatusTypeDef GM6020_SendVoltageConfig();
-HAL_StatusTypeDef GM6020_SendCurrentConfig();
-void GM6020_WriteInfo(uint8_t GM6020_ID, uint8_t* pDatas);
-GM6020_TypeDef* GM6020_GetInfop(uint8_t GM6020_ID);
-void GM6020_Init(uint8_t GM6020_ID);
-void GM6020_Update(uint8_t GM6020_ID);
-void GM6020_Update_PIDAngle(uint8_t GM6020_ID);
-void GM6020_Update_PIDSpeed(uint8_t GM6020_ID);
+    void WriteInfo(uint8_t* pDatas);
+    void Reinit();
+    void SetTragetAngle(float TragetAngle);
+    void SetTragetSpeed(float TragetSpeed);
+    void Update_PIDAngle();
+    void Update_PIDSpeed();
+    void Update();
+};
 
+#endif
 #endif

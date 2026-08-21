@@ -65,42 +65,7 @@ void MX_FREERTOS_Init(void);
 #include "UART_IO.h"
 #include "stdio.h"
 #include "tim.h"
-void Sys_Init()
-{
-    
-    
-    TIM4->CR1 |= TIM_CR1_CEN_Msk;
-    // HAL_TIM_Base_Start();
-
-    HAL_Delay(50);
-    //=======================CAN=====================
-    CAN_FilterTypeDef FilterConfig;
-    FilterConfig.FilterActivation = CAN_FILTER_ENABLE;
-    FilterConfig.FilterScale      = CAN_FILTERSCALE_16BIT; // 16位模式
-    FilterConfig.FilterMode       = CAN_FILTERMODE_IDMASK; // 掩码
-
-    FilterConfig.FilterBank           = 0;                                   // 配置Bank0
-    FilterConfig.FilterIdHigh         = (GM6020_BackMailBaseID & 0xFF) << 5; // 左对齐，只接受GM6020报文
-    FilterConfig.FilterMaskIdHigh     = 0xFC00;
-    FilterConfig.FilterFIFOAssignment = CAN_FilterFIFO0;
-
-    HAL_CAN_ConfigFilter(&hcan, &FilterConfig);
-    HAL_CAN_Start(&hcan);
-    CAN1->IER|=CAN_IER_FMPIE0;
-    //======================USART1=====================
-    printf("Start!\n");
-    
-    Debug_TXBufferClear_IT();
-    USART1->CR1 |= USART_CR1_RXNEIE_Msk;
-    USART1->CR1 |= USART_CR1_TXEIE_Msk;
-    //======================
-    for (uint8_t ID = 1; ID <= GM6020_ID_MAX; ID++)
-    {
-        GM6020_Init(ID);
-    }
-    HAL_Delay(1000);
-    return ;
-}
+#include "TrueMain.h"
 /* USER CODE END 0 */
 
 /**
@@ -137,7 +102,7 @@ int main(void)
   MX_CRC_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-  Sys_Init();
+  MainSetup();
 
   /* USER CODE END 2 */
 

@@ -11,5 +11,16 @@
         "starm-clangd",
         "--query-driver=${env:CUBE_BUNDLE_PATH}/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc*",
         "--query-driver=${env:CUBE_BUNDLE_PATH}/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-g++*"
+    ],
+    "clangd.arguments": [
+        "--header-insertion=never",
+        // 你的其他 clangd 参数，例如 --background-index 等
+        "--header-insertion=never",
+        "--compile-commands-dir=build/Debug",
+        "-isystem=C:/Users/ATRIInit/Documents/File/programs/ARM_Dev_Toolchain/arm-none-eabi/include/c++/15.3.1",
+        "-isystem=C:/Users/ATRIInit/Documents/File/programs/ARM_Dev_Toolchain/arm-none-eabi/include/c++/15.3.1/arm-none-eabi",
+        "-isystem=C:/Users/ATRIInit/Documents/File/programs/ARM_Dev_Toolchain/arm-none-eabi/include",
+        "-isystem=C:/Users/ATRIInit/Documents/File/programs/ARM_Dev_Toolchain/lib/gcc/arm-none-eabi/15.3.1/include"
     ]
+    
 }
